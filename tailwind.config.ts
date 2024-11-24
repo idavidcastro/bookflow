@@ -14,11 +14,17 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: "#2563eb",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        monserrat: ["var(--font-monserrat)"],
+        spectral: ["var(--font-spectral)"],
+        roboto: ["var(--font-roboto)"],
       },
     },
   },
