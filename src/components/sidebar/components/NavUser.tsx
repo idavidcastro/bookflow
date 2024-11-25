@@ -1,4 +1,3 @@
-import Image from "next/image";
 import ivan from "@/assets/profile/ivan.jpg";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,17 +6,13 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { Info, Settings, User } from "lucide-react";
 
 export default function NavUser() {
   return (
@@ -55,7 +50,9 @@ export default function NavUser() {
               className="flex w-full justify-between items-center"
             >
               <span>Perfil</span>
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              <DropdownMenuShortcut>
+                <User className="w-[18px]" />
+              </DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="flex justify-between items-center">
@@ -64,7 +61,9 @@ export default function NavUser() {
               className="flex w-full justify-between items-center"
             >
               <span>Ajustes</span>
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              <DropdownMenuShortcut>
+                <Settings className="w-[18px]" />
+              </DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="flex justify-between items-center">
@@ -73,13 +72,13 @@ export default function NavUser() {
               className="flex w-full justify-between items-center"
             >
               <span>Ayuda</span>
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              <DropdownMenuShortcut>
+                <Info className="w-[18px]" />
+              </DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-
         <DropdownMenuSeparator />
-
         <DropdownMenuItem style={{ color: "#dc2626" }}>
           Cerrar sesión
         </DropdownMenuItem>

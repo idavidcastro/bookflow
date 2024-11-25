@@ -9,7 +9,7 @@ export default function DashboardLayout({
     <div className="flex items-start justify-between">
       <SideBar />
 
-      <main className="grid w-full h-full pl-[300px]">
+      <main className="grid w-full h-full pl-[300px] items-center">
         <Header />
         {children}
       </main>

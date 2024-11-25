@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Badge } from "../ui/badge";
 
 export default function Header() {
   const [notification, setNotification] = useState<any>([
