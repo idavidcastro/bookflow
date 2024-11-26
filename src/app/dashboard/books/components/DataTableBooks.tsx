@@ -174,7 +174,7 @@ type DataTableProps = {
   data: Payment[];
 };
 
-export function DataTable({ data }: DataTableProps) {
+export function DataTableBooks({ data }: DataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

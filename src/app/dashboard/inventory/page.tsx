@@ -1,6 +1,5 @@
-import { DataTable, Payment } from "@/components/DataTable";
-import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
+import { DataTableInventory, Payment } from "./components/DataTableInventory";
 
 const otherData: Payment[] = [
   {
@@ -22,7 +21,7 @@ export default function Inventory() {
     <div className="m-4 border rounded-md p-4">
       <h2 className="text-4xl font-roboto font-semibold pb-4">Inventario</h2>
       <hr />
-      <DataTable data={otherData} />;
+      <DataTableInventory data={otherData} />
     </div>
   );
 }
