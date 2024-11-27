@@ -18,6 +18,7 @@ import {
   ChevronDown,
   Edit,
   MoreHorizontal,
+  Plus,
   Trash,
   Trash2,
 } from "lucide-react";
@@ -42,6 +43,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import DialogInventory from "./DialogInventory";
 
 export type Payment = {
   id: string;
@@ -204,7 +206,7 @@ export function DataTableInventory({ data }: DataTableProps) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Buscar..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
@@ -213,32 +215,41 @@ export function DataTableInventory({ data }: DataTableProps) {
           }
           className="max-w-sm"
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant={"primary"} className="ml-auto">
-              Columnas <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex gap-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant={"primary"}
+                className="ml-auto bg-white border border-primary text-primary"
+              >
+                Columnas <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {/* <Button variant={"primary"} className="ml-auto" onClick={}>
+            Nuevo <Plus />
+          </Button> */}
+          <DialogInventory />
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -293,7 +304,7 @@ export function DataTableInventory({ data }: DataTableProps) {
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} seleccionado.
+          {table.getFilteredRowModel().rows.length} seleccionado
         </div>
         <div className="space-x-2">
           <Button
