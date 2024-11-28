@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 const Hero = () => {
   const router = useRouter();
@@ -24,20 +25,19 @@ const Hero = () => {
         </p>
         <br />
         <div className="flex gap-x-2">
-          {/* <OrangeButton
-            text="Iniciar sesión"
-            onClick={() => router.push("/login")}
-          /> */}
-          {/* <WhiteButton text="Regístrate" /> */}
-          <Button type="submit" variant={"primary"}>
-            Iniciar sesión
-          </Button>
-          <Button
-            variant="primary"
-            className="bg-white text-primary border border-primary hover:bg-primary hover:text-white"
-          >
-            Regístrate
-          </Button>
+          <Link href="/auth/login" passHref>
+            <Button variant="primary" className="ml-auto">
+              Iniciar sesión
+            </Button>
+          </Link>
+          <Link href="/auth/register" passHref>
+            <Button
+              variant="primary"
+              className="ml-auto bg-white text-primary border border-primary hover:bg-primary hover:text-white"
+            >
+              Regístrate
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
