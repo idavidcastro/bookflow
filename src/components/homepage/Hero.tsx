@@ -32,7 +32,10 @@ const Hero = () => {
           <Button type="submit" variant={"primary"}>
             Iniciar sesión
           </Button>
-          <Button type="submit" variant={"primary"}>
+          <Button
+            variant="primary"
+            className="bg-white text-primary border border-primary hover:bg-primary hover:text-white"
+          >
             Regístrate
           </Button>
         </div>
