@@ -1,26 +1,27 @@
 "use client";
-import React from "react";
-import CardWrapper from "./CardWrapper";
+import React, { useState } from "react";
+import CardWrapper from "./components/CardWrapper";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { LoginSchema } from "@/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { LoginSchema } from "@/schema";
 import { z } from "zod";
-import { useFormStatus } from "react-dom";
-import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient"; // Importar el cliente de Supabase
+import { useRouter } from "next/navigation"; // Importar useRouter para redirección
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter(); // Inicializar el hook de Next.js para redirigir
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -30,12 +31,43 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (data: z.infer<typeof LoginSchema>) => {
     setLoading(true);
-    console.log(data);
-  };
+    setError(null);
 
-  const { pending } = useFormStatus();
+    const { email, password } = data;
+
+    // Intentamos autenticar al usuario con Supabase
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      console.log("Error de autenticación:", error.message); // Muestra el error si ocurre
+      setError(error.message); // Muestra el error en la interfaz
+    } else {
+      console.log("Usuario autenticado:", authData);
+
+      // Obtener información adicional del usuario
+      const { user } = authData; // El objeto 'user' contiene los detalles del usuario autenticado
+
+      // Si el perfil del usuario tiene información adicional (nombre, rol, etc.)
+      const userData = {
+        email: user?.email,
+        name: user?.user_metadata?.full_name, // Nombre completo, si está disponible en los metadatos
+        role: user?.user_metadata?.role, // Rol, si está disponible en los metadatos
+        // Cualquier otro dato que tengas en los metadatos del usuario
+      };
+
+      console.log("Información del usuario autenticado:", userData);
+
+      // Redirige al dashboard si la autenticación es exitosa
+      router.push("/dashboard");
+    }
+
+    setLoading(false);
+  };
 
   return (
     <CardWrapper
@@ -79,11 +111,14 @@ export default function LoginForm() {
               )}
             />
           </div>
+
+          {error && <div className="text-red-500 text-sm">{error}</div>}
+
           <Button
             type="submit"
             variant="primary"
             className="w-full"
-            disabled={pending}
+            disabled={loading}
           >
             {loading ? "Cargando..." : "Iniciar sesión"}
           </Button>

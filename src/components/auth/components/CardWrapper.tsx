@@ -25,8 +25,8 @@ export default function CardWrapper({
   children,
 }: CardWrapperProps) {
   return (
-    <Card className="xl:w-1/4 md:w-1/2 shadow-md">
-      <CardHeader>
+    <Card className="xl:w-1/3 md:w-1/2 shadow-md">
+      <CardHeader className="font-roboto">
         <AuthHeader label={label} title={title} />
       </CardHeader>
       <CardContent>{children}</CardContent>
