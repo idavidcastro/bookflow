@@ -9,7 +9,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "../ui/command";
-import { Settings, SquareLibrary, User } from "lucide-react";
+import { Settings } from "lucide-react";
 import Link from "next/link";
 import NavUser from "./components/NavUser";
 import NavHeader from "./components/NavHeader";
@@ -20,9 +20,17 @@ import { userRoutes } from "@/config/user.routes";
 export default function SideBar() {
   const [views, setViews] = useState<View[]>([]);
   const [type, setType] = useState<string | null>(null);
+
   useEffect(() => {
-    const storedType = localStorage.getItem("type");
-    setType(storedType);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setType(parsedUser.role);
+      } catch {
+        setType(storedUser);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -54,13 +62,6 @@ export default function SideBar() {
           </CommandList>
         </Command>
       </div>
-
-      {/* <div>
-        <Link href="/dashboard/inventory" className="flex items-center gap-2">
-          <Settings />
-          <span>Inventario</span>
-        </Link>
-        </div> */}
       <div className="flex">
         <NavUser />
       </div>

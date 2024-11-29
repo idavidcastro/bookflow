@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import CardWrapper from "./components/CardWrapper";
 import {
   Form,
@@ -15,13 +15,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "@/schema";
 import { z } from "zod";
-import { supabase } from "@/lib/supabaseClient"; // Importar el cliente de Supabase
-import { useRouter } from "next/navigation"; // Importar useRouter para redirección
+import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie"; // Importar js-cookie
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter(); // Inicializar el hook de Next.js para redirigir
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -37,33 +38,61 @@ export default function LoginForm() {
 
     const { email, password } = data;
 
-    // Intentamos autenticar al usuario con Supabase
-    const { data: authData, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
+    const { data: authData, error: authError } =
+      await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
 
-    if (error) {
-      console.log("Error de autenticación:", error.message); // Muestra el error si ocurre
-      setError(error.message); // Muestra el error en la interfaz
-    } else {
-      console.log("Usuario autenticado:", authData);
+    if (authError) {
+      console.log("Error de autenticación:", authError.message);
+      setError(authError.message);
+    } else if (authData?.user) {
+      try {
+        const userId = authData.user.id;
 
-      // Obtener información adicional del usuario
-      const { user } = authData; // El objeto 'user' contiene los detalles del usuario autenticado
+        const { data: user, error: userError } = await supabase
+          .from("users")
+          .select("id, name, last_name, email, photo, role")
+          .eq("id", userId)
+          .single();
 
-      // Si el perfil del usuario tiene información adicional (nombre, rol, etc.)
-      const userData = {
-        email: user?.email,
-        name: user?.user_metadata?.full_name, // Nombre completo, si está disponible en los metadatos
-        role: user?.user_metadata?.role, // Rol, si está disponible en los metadatos
-        // Cualquier otro dato que tengas en los metadatos del usuario
-      };
+        if (userError) throw new Error(userError.message);
 
-      console.log("Información del usuario autenticado:", userData);
+        // Guardar en localStorage
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: user.id,
+            name: user.name,
+            lastName: user.last_name,
+            email: user.email,
+            photo: user.photo,
+            role: user.role,
+          })
+        );
 
-      // Redirige al dashboard si la autenticación es exitosa
-      router.push("/dashboard");
+        Cookies.set(
+          "user",
+          JSON.stringify({
+            id: user.id,
+            name: user.name,
+            lastName: user.last_name,
+            email: user.email,
+            photo: user.photo,
+            role: user.role,
+          }),
+          { expires: 7 }
+        );
+
+        const cookie = JSON.parse(Cookies.get("user") || "{}");
+        console.log("la cookie", cookie);
+
+        router.push("/dashboard");
+      } catch (fetchError) {
+        console.error("Error al obtener los datos del usuario:", fetchError);
+        setError("No se pudieron obtener los datos del usuario.");
+      }
     }
 
     setLoading(false);

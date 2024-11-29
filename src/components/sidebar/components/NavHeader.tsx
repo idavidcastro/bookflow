@@ -8,9 +8,18 @@ export default function NavHeader() {
   const [type, setType] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedType = localStorage.getItem("type");
-    setType(storedType);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setType(parsedUser.role);
+      } catch {
+        setType(storedUser);
+      }
+    }
   }, []);
+
+  console.log("tipo de usuario:", type);
 
   return (
     <div className="flex items-center justify-between gap-2 border rounded-[8px] p-2">
