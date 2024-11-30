@@ -7,11 +7,17 @@ import { addBook, deleteBook, getBooks } from "@/lib/books";
 export default function Inventory() {
   const [books, setBooks] = useState<Book[]>([]);
   const [newBook, setNewBook] = useState({
+    id: 0,
     title: "",
     author: "",
     genre: "",
     description: "",
     published_date: "",
+    isbn: "",
+    pages: 0,
+    language: "",
+    publisher: "",
+    available: true,
     available_count: 0,
     total_count: 0,
   });
@@ -23,7 +29,7 @@ export default function Inventory() {
 
   const handleAddBook = async () => {
     await addBook(newBook);
-    fetchBooks(); // Actualizar la lista de libros después de agregar uno
+    fetchBooks();
   };
 
   const handleDeleteBook = async (bookId: number) => {

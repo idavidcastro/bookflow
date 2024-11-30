@@ -1,10 +1,14 @@
 export interface Book {
-  id: string;
+  id: number;
   title: string;
   author: string;
-  genre: string;
+  genre_id: string; //género
   description: string;
   published_date: string;
-  available_count: number;
-  total_count: number;
+  isbn: string;
+  pages: number;
+  language: string;
+  publisher: string; //editorial
+  available: boolean; //estado
+  available_count: number; //stock
 }
