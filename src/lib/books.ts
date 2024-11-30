@@ -1,14 +1,7 @@
+import { Book } from "@/app/dashboard/inventory/model/book";
 import { supabase } from "./supabaseClient";
 
-export const addBook = async (bookData: {
-  title: string;
-  author: string;
-  genre: string;
-  description: string;
-  published_date: string;
-  available_count: number;
-  total_count: number;
-}) => {
+export const addBook = async (bookData: Book) => {
   const { data, error } = await supabase.from("books").insert([bookData]);
 
   if (error) throw new Error(error.message);
@@ -21,18 +14,7 @@ export const getBooks = async () => {
   return data;
 };
 
-export const updateBook = async (
-  bookId: number,
-  bookData: {
-    title?: string;
-    author?: string;
-    genre?: string;
-    description?: string;
-    published_date?: string;
-    available_count?: number;
-    total_count?: number;
-  }
-) => {
+export const updateBook = async (bookId: number, bookData: Book) => {
   const { data, error } = await supabase
     .from("books")
     .update(bookData)

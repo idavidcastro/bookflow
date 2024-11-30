@@ -47,13 +47,14 @@ import DialogInventory from "./DialogInventory";
 import { useEffect, useState } from "react";
 import { addBook, deleteBook, getBooks } from "@/lib/books";
 import { Book } from "../model/book";
+import DialogEditInventory from "./DialogEditInventary";
 
 export const columns: ColumnDef<Book>[] = [
-  {
-    accessorKey: "id",
-    header: "Id",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
-  },
+  // {
+  //   accessorKey: "id",
+  //   header: "Id",
+  //   cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
+  // },
   {
     accessorKey: "title",
     header: ({ column }) => {
@@ -92,21 +93,54 @@ export const columns: ColumnDef<Book>[] = [
   },
   {
     accessorKey: "published_date",
-    header: "Fecha de publicación",
+    header: "Publicación",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("published_date")}</div>
     ),
   },
   {
+    accessorKey: "isbn",
+    header: "ISBN",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("isbn")}</div>,
+  },
+  {
+    accessorKey: "pages",
+    header: "Páginas",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("pages")}</div>
+    ),
+  },
+  {
+    accessorKey: "language",
+    header: "Lenguaje",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("language")}</div>
+    ),
+  },
+  {
+    accessorKey: "publisher",
+    header: "Editorial",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("publisher")}</div>
+    ),
+  },
+  {
+    accessorKey: "available",
+    header: "Disponible",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("available")}</div>
+    ),
+  },
+  {
     accessorKey: "available_count",
-    header: "Disponibles",
+    header: "Disponible",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("available_count")}</div>
     ),
   },
   {
     accessorKey: "total_count",
-    header: "Total",
+    header: "Stock",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("total_count")}</div>
     ),
@@ -137,14 +171,15 @@ export const columns: ColumnDef<Book>[] = [
 
       return (
         <div className="flex justify-end space-x-2">
-          <Button
+          {/* <Button
             variant="ghost"
             className="h-8 w-8 p-0"
-            onClick={() => console.log(`Editar libro: ${book.id}`)}
+            onClick={() => console.log(`Editar libro: ${book.title}`)}
           >
             <Edit className="h-4 w-4 text-primary" />
             <span className="sr-only">Editar</span>
-          </Button>
+          </Button> */}
+          <DialogEditInventory />
           <Button
             variant="ghost"
             className="h-8 w-8 p-0"

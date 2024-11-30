@@ -32,6 +32,7 @@ import {
   Languages,
   Building2,
   BookCopy,
+  Edit,
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -40,7 +41,7 @@ interface Genre {
   name: string;
 }
 
-export default function DialogInventory() {
+export default function DialogEditInventory() {
   const [open, setOpen] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -61,7 +62,6 @@ export default function DialogInventory() {
 
   const handleSave = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log("switch", isAvailable);
     console.log("Libro guardado");
     setOpen(false);
   };
@@ -69,14 +69,17 @@ export default function DialogInventory() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="primary">Nuevo +</Button>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <Edit className="h-4 w-4 text-primary" />
+          <span className="sr-only">Editar</span>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
-          <DialogTitle>Agregar Nuevo Libro</DialogTitle>
+          <DialogTitle>Actualizar Libro</DialogTitle>
           <DialogDescription>
-            Ingresa los detalles del libro aquí. Haz clic en guardar cuando
-            hayas terminado.
+            A continuación podrá ver la información del libro seleccionado. Haz
+            clic en Actualizar cuando haya terminado.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSave}>
@@ -197,7 +200,7 @@ export default function DialogInventory() {
               />
             </div>
             <div className="flex flex-col space-y-2.5">
-              <Label htmlFor="units">Cantidad de unidades</Label>
+              <Label htmlFor="units">Cantidad de nidades</Label>
               <div className="relative">
                 <BookCopy
                   className="absolute left-2 top-1/2 transform -translate-y-1/2 text-primary"
@@ -214,7 +217,7 @@ export default function DialogInventory() {
           </div>
           <DialogFooter className="w-full">
             <Button type="submit" variant="primary">
-              Guardar libro
+              Crear libro
             </Button>
           </DialogFooter>
         </form>
