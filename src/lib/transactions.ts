@@ -1,4 +1,3 @@
-// lib/transactions.ts
 import { supabase } from "./supabaseClient";
 
 export const borrowBook = async (
@@ -12,6 +11,27 @@ export const borrowBook = async (
 
   if (error) throw new Error(error.message);
   return data;
+};
+
+export const handleBorrow = async (bookId: number, userId: string) => {
+  try {
+    const { data, error } = await supabase.from("transactions").insert([
+      {
+        book_id: bookId,
+        user_id: userId,
+        due_date: new Date(new Date().setDate(new Date().getDate() + 7)), // Fecha de vencimiento a 7 días
+      },
+    ]);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    console.log("Transacción exitosa:", data);
+    return data;
+  } catch (error) {
+    console.error("Error al prestar el libro:", error);
+  }
 };
 
 export const getUserTransactions = async (userId: string) => {

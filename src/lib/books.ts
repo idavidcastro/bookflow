@@ -51,6 +51,17 @@ export const getBooks = async () => {
   return data;
 };
 
+export const getAvailableBooks = async () => {
+  const { data, error } = await supabase
+    .from("books")
+    .select("*")
+    .eq("available", true) // Filtrar donde available sea true
+    .gt("available_count", 0); // Filtrar donde available_count > 0
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
 export const updateBook = async (bookId: number, bookData: Book) => {
   try {
     const { data, error } = await supabase
