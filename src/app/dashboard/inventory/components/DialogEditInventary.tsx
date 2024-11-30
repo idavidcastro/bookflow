@@ -1,15 +1,24 @@
 "use client";
+import { format } from "date-fns";
+import { CalendarIcon, Edit } from "lucide-react";
 
-import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useState, useEffect, use } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,68 +30,77 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DatePicker } from "@/components/ui/date-picker";
 import { Switch } from "@/components/ui/switch";
 import {
   BookOpen,
   User,
-  BookType,
   FileText,
   Hash,
   Languages,
   Building2,
   BookCopy,
-  Edit,
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import { useForm } from "react-hook-form";
+import { Book } from "../model/book";
+import { addBook, updateBook } from "@/lib/books";
 
 interface Genre {
   id: number;
   name: string;
 }
 
-export default function DialogEditInventory() {
+interface Props {
+  book: Book;
+}
+
+export default function DialogEditInventory({ book }: Props) {
   const [open, setOpen] = useState(false);
-  const [isAvailable, setIsAvailable] = useState(false);
   const [genres, setGenres] = useState<Genre[]>([]);
+  const [date, setDate] = useState<Date>();
 
-  useEffect(() => {
-    async function fetchGenres() {
-      const { data, error } = await supabase.from("genres").select("id, name");
+  const { register, handleSubmit, setValue, watch } = useForm<Book>({
+    defaultValues: book, // Asegúrate de pasar los datos iniciales al formulario
+  });
 
-      if (error) {
-        console.error("Error fetching genres:", error);
-      } else {
-        setGenres(data || []);
-      }
+  async function fetchGenres() {
+    const { data, error } = await supabase.from("genres").select("id, name");
+
+    if (error) {
+      console.error("Error fetching genres:", error);
+    } else {
+      setGenres(data || []);
     }
-
+  }
+  useEffect(() => {
     fetchGenres();
   }, []);
 
-  const handleSave = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("Libro guardado");
+  const handleSave = (data: Book) => {
+    updateBook(book.id, data);
     setOpen(false);
+    fetchGenres();
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
-          <Edit className="h-4 w-4 text-primary" />
-          <span className="sr-only">Editar</span>
+          <Edit className="h-4 w-4 text-primary" />{" "}
+          <span className="sr-only">Editar</span>{" "}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
-          <DialogTitle>Actualizar Libro</DialogTitle>
+          <DialogTitle>Actualizar libro</DialogTitle>
           <DialogDescription>
-            A continuación podrá ver la información del libro seleccionado. Haz
-            clic en Actualizar cuando haya terminado.
+            A continuación se muestran los datos del libro seleccionado. Haga
+            clic en actualizar cuando haya terminado.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSave}>
+        <form
+          onSubmit={handleSubmit(handleSave)} // Llama a handleSave con los datos del formulario
+        >
           <div className="grid grid-cols-2 gap-6 py-6">
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="title">Título</Label>
@@ -95,6 +113,7 @@ export default function DialogEditInventory() {
                   id="title"
                   className="pl-8"
                   placeholder="Ingrese el título"
+                  {...register("title")} // Registra el campo con react-hook-form
                 />
               </div>
             </div>
@@ -109,12 +128,18 @@ export default function DialogEditInventory() {
                   id="author"
                   className="pl-8"
                   placeholder="Ingrese el autor"
+                  {...register("author")} // Registra el campo con react-hook-form
                 />
               </div>
             </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="genre">Género</Label>
-              <Select>
+              <Select
+                defaultValue={book.genre_id.toString()} // Usa defaultValue para el valor inicial
+                onValueChange={(value) => {
+                  setValue("genre_id", value);
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione un género" />
                 </SelectTrigger>
@@ -129,7 +154,40 @@ export default function DialogEditInventory() {
             </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="publicationDate">Fecha de publicación</Label>
-              <DatePicker />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="text-primary" />
+                    {book.published_date ? (
+                      format(book.published_date, "dd MMM, yyyy") // Formato de día, mes y año
+                    ) : (
+                      <span>Selecciona una fecha</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(selectedDate) => {
+                      setDate(selectedDate);
+
+                      const formattedDate = selectedDate
+                        ? format(selectedDate, "dd MMM yyyy")
+                        : "";
+
+                      setValue("published_date", formattedDate); // Usa setValue para actualizar
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="flex flex-col space-y-2.5 col-span-2">
               <Label htmlFor="description">Descripción</Label>
@@ -142,6 +200,7 @@ export default function DialogEditInventory() {
                   id="description"
                   className="pl-8"
                   placeholder="Ingrese la descripción"
+                  {...register("description")} // Registra el campo con react-hook-form
                 />
               </div>
             </div>
@@ -156,12 +215,18 @@ export default function DialogEditInventory() {
                   id="isbn"
                   className="pl-8"
                   placeholder="Ingrese el ISBN"
+                  {...register("isbn")} // Registra el campo con react-hook-form
                 />
               </div>
             </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="pages">Páginas</Label>
-              <Input id="pages" type="number" placeholder="Número de páginas" />
+              <Input
+                id="pages"
+                type="number"
+                placeholder="Número de páginas"
+                {...register("pages")} // Registra el campo con react-hook-form
+              />
             </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="language">Lenguaje</Label>
@@ -174,6 +239,7 @@ export default function DialogEditInventory() {
                   id="language"
                   className="pl-8"
                   placeholder="Ingrese el lenguaje"
+                  {...register("language")} // Registra el campo con react-hook-form
                 />
               </div>
             </div>
@@ -188,19 +254,21 @@ export default function DialogEditInventory() {
                   id="publisher"
                   className="pl-8"
                   placeholder="Ingrese la editorial"
+                  {...register("publisher")} // Registra el campo con react-hook-form
                 />
               </div>
             </div>
             <div className="flex flex-col space-y-2.5">
-              <Label htmlFor="available">Disponible</Label>
+              <Label htmlFor="available">Estado </Label>
               <Switch
                 id="available"
-                checked={isAvailable}
-                onCheckedChange={setIsAvailable}
+                checked={watch("available") || book.available} // Usa watch para obtener el valor
+                onCheckedChange={(checked) => setValue("available", checked)} // Usa setValue para actualizar
               />
             </div>
+
             <div className="flex flex-col space-y-2.5">
-              <Label htmlFor="units">Cantidad de nidades</Label>
+              <Label htmlFor="units">En Stock</Label>
               <div className="relative">
                 <BookCopy
                   className="absolute left-2 top-1/2 transform -translate-y-1/2 text-primary"
@@ -211,13 +279,14 @@ export default function DialogEditInventory() {
                   type="number"
                   className="pl-8"
                   placeholder="Ingrese la cantidad"
+                  {...register("available_count")} // Registra el campo con react-hook-form
                 />
               </div>
             </div>
           </div>
           <DialogFooter className="w-full">
             <Button type="submit" variant="primary">
-              Crear libro
+              Actualizar
             </Button>
           </DialogFooter>
         </form>

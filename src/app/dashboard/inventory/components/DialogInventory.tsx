@@ -1,15 +1,24 @@
 "use client";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
-import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useState, useEffect, use } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,12 +30,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DatePicker } from "@/components/ui/date-picker";
 import { Switch } from "@/components/ui/switch";
 import {
   BookOpen,
   User,
-  BookType,
   FileText,
   Hash,
   Languages,
@@ -34,6 +41,9 @@ import {
   BookCopy,
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import { useForm } from "react-hook-form";
+import { Book } from "../model/book";
+import { addBook } from "@/lib/books";
 
 interface Genre {
   id: number;
@@ -42,28 +52,32 @@ interface Genre {
 
 export default function DialogInventory() {
   const [open, setOpen] = useState(false);
-  const [isAvailable, setIsAvailable] = useState(false);
   const [genres, setGenres] = useState<Genre[]>([]);
+  const [date, setDate] = useState<Date>();
 
-  useEffect(() => {
-    async function fetchGenres() {
-      const { data, error } = await supabase.from("genres").select("id, name");
+  const { register, handleSubmit, setValue, watch } = useForm<Book>({
+    defaultValues: {
+      available: true,
+    },
+  });
 
-      if (error) {
-        console.error("Error fetching genres:", error);
-      } else {
-        setGenres(data || []);
-      }
+  async function fetchGenres() {
+    const { data, error } = await supabase.from("genres").select("id, name");
+
+    if (error) {
+      console.error("Error fetching genres:", error);
+    } else {
+      setGenres(data || []);
     }
-
+  }
+  useEffect(() => {
     fetchGenres();
   }, []);
 
-  const handleSave = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("switch", isAvailable);
-    console.log("Libro guardado");
+  const handleSave = (data: Book) => {
+    addBook(data);
     setOpen(false);
+    fetchGenres();
   };
 
   return (
@@ -79,7 +93,9 @@ export default function DialogInventory() {
             hayas terminado.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSave}>
+        <form
+          onSubmit={handleSubmit(handleSave)} // Llama a handleSave con los datos del formulario
+        >
           <div className="grid grid-cols-2 gap-6 py-6">
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="title">Título</Label>
@@ -92,6 +108,7 @@ export default function DialogInventory() {
                   id="title"
                   className="pl-8"
                   placeholder="Ingrese el título"
+                  {...register("title")}
                 />
               </div>
             </div>
@@ -106,12 +123,17 @@ export default function DialogInventory() {
                   id="author"
                   className="pl-8"
                   placeholder="Ingrese el autor"
+                  {...register("author")}
                 />
               </div>
             </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="genre">Género</Label>
-              <Select>
+              <Select
+                onValueChange={(value) => {
+                  setValue("genre_id", value);
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione un género" />
                 </SelectTrigger>
@@ -126,7 +148,40 @@ export default function DialogInventory() {
             </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="publicationDate">Fecha de publicación</Label>
-              <DatePicker />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="text-primary" />
+                    {date ? (
+                      format(date, "dd MMM, yyyy") // Formato de día, mes y año
+                    ) : (
+                      <span>Seleciona una fecha</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(selectedDate) => {
+                      setDate(selectedDate);
+
+                      const formattedDate = selectedDate
+                        ? format(selectedDate, "dd MMM yyyy")
+                        : "";
+
+                      setValue("published_date", formattedDate);
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="flex flex-col space-y-2.5 col-span-2">
               <Label htmlFor="description">Descripción</Label>
@@ -139,6 +194,7 @@ export default function DialogInventory() {
                   id="description"
                   className="pl-8"
                   placeholder="Ingrese la descripción"
+                  {...register("description")}
                 />
               </div>
             </div>
@@ -153,12 +209,18 @@ export default function DialogInventory() {
                   id="isbn"
                   className="pl-8"
                   placeholder="Ingrese el ISBN"
+                  {...register("isbn")}
                 />
               </div>
             </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="pages">Páginas</Label>
-              <Input id="pages" type="number" placeholder="Número de páginas" />
+              <Input
+                id="pages"
+                type="number"
+                placeholder="Número de páginas"
+                {...register("pages")}
+              />
             </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="language">Lenguaje</Label>
@@ -171,6 +233,7 @@ export default function DialogInventory() {
                   id="language"
                   className="pl-8"
                   placeholder="Ingrese el lenguaje"
+                  {...register("language")}
                 />
               </div>
             </div>
@@ -185,19 +248,21 @@ export default function DialogInventory() {
                   id="publisher"
                   className="pl-8"
                   placeholder="Ingrese la editorial"
+                  {...register("publisher")}
                 />
               </div>
             </div>
             <div className="flex flex-col space-y-2.5">
-              <Label htmlFor="available">Disponible</Label>
+              <Label htmlFor="available">Estado </Label>
               <Switch
                 id="available"
-                checked={isAvailable}
-                onCheckedChange={setIsAvailable}
+                checked={watch("available")}
+                onCheckedChange={(checked) => setValue("available", checked)}
               />
             </div>
+
             <div className="flex flex-col space-y-2.5">
-              <Label htmlFor="units">Cantidad de unidades</Label>
+              <Label htmlFor="units">En Stock</Label>
               <div className="relative">
                 <BookCopy
                   className="absolute left-2 top-1/2 transform -translate-y-1/2 text-primary"
@@ -208,13 +273,14 @@ export default function DialogInventory() {
                   type="number"
                   className="pl-8"
                   placeholder="Ingrese la cantidad"
+                  {...register("available_count")}
                 />
               </div>
             </div>
           </div>
           <DialogFooter className="w-full">
             <Button type="submit" variant="primary">
-              Guardar libro
+              Guardar
             </Button>
           </DialogFooter>
         </form>
