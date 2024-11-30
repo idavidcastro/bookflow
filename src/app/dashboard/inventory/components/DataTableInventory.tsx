@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -33,123 +32,10 @@ import {
 } from "@/components/ui/table";
 import DialogInventory from "./DialogInventory";
 
-import { Book } from "../model/book";
+import { Book } from "@/models/book";
 import DialogEditInventory from "./DialogEditInventary";
 import { deleteBook } from "@/lib/books";
-
-export const columns: ColumnDef<Book>[] = [
-  {
-    accessorKey: "title",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Título
-          <ArrowUpDown />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("title")}</div>
-    ),
-  },
-  {
-    accessorKey: "author",
-    header: "Autor",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("author")}</div>
-    ),
-  },
-  {
-    accessorKey: "genre_id",
-    header: "Género",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("genre_id")}</div>
-    ),
-  },
-  {
-    accessorKey: "description",
-    header: "Descripción",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("description")}</div>
-    ),
-  },
-  {
-    accessorKey: "published_date",
-    header: "Publicación",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("published_date")}</div>
-    ),
-  },
-  {
-    accessorKey: "isbn",
-    header: "ISBN",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("isbn")}</div>,
-  },
-  {
-    accessorKey: "pages",
-    header: "Páginas",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("pages")}</div>
-    ),
-  },
-  {
-    accessorKey: "language",
-    header: "Lenguaje",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("language")}</div>
-    ),
-  },
-  {
-    accessorKey: "publisher",
-    header: "Editorial",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("publisher")}</div>
-    ),
-  },
-  {
-    accessorKey: "available",
-    header: "Estado",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {row.getValue("available") ? "Disponible" : "No"}
-      </div>
-    ),
-  },
-
-  {
-    accessorKey: "available_count",
-    header: "Disponible",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("available_count")}</div>
-    ),
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    header: () => <div className="text-right">Opciones</div>,
-    cell: ({ row }) => {
-      const book = row.original;
-
-      return (
-        <div className="flex justify-end space-x-2">
-          <DialogEditInventory book={book} />
-          <Button
-            variant="ghost"
-            className="h-8 w-8 p-0"
-            // onClick={() => console.log(`Eliminar libro: ${book.title}`)}
-            onClick={() => deleteBook(book.id)}
-          >
-            <Trash2 className="h-4 w-4 text-redCustom" />
-            <span className="sr-only">Eliminar</span>
-          </Button>
-        </div>
-      );
-    },
-  },
-];
+import { columns } from "./ColumnDef";
 
 type DataTableProps = {
   data: Book[];
@@ -281,7 +167,7 @@ export function DataTableInventory({ data }: DataTableProps) {
         <div className="flex-1 text-sm text-muted-foreground"></div>
         <div className="space-x-2">
           <Button
-            variant="outline"
+            variant="primary"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
@@ -289,7 +175,7 @@ export function DataTableInventory({ data }: DataTableProps) {
             Anterior
           </Button>
           <Button
-            variant="outline"
+            variant="primary"
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}

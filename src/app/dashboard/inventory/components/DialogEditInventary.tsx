@@ -1,7 +1,6 @@
 "use client";
 import { format } from "date-fns";
 import { CalendarIcon, Edit } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -9,7 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,8 +41,8 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { useForm } from "react-hook-form";
-import { Book } from "../model/book";
-import { addBook, updateBook } from "@/lib/books";
+import { Book } from "../../../../models/book";
+import { updateBook } from "@/lib/books";
 
 interface Genre {
   id: number;
@@ -60,7 +59,7 @@ export default function DialogEditInventory({ book }: Props) {
   const [date, setDate] = useState<Date>();
 
   const { register, handleSubmit, setValue, watch } = useForm<Book>({
-    defaultValues: book, // Asegúrate de pasar los datos iniciales al formulario
+    defaultValues: book,
   });
 
   async function fetchGenres() {
@@ -98,9 +97,7 @@ export default function DialogEditInventory({ book }: Props) {
             clic en actualizar cuando haya terminado.
           </DialogDescription>
         </DialogHeader>
-        <form
-          onSubmit={handleSubmit(handleSave)} // Llama a handleSave con los datos del formulario
-        >
+        <form onSubmit={handleSubmit(handleSave)}>
           <div className="grid grid-cols-2 gap-6 py-6">
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="title">Título</Label>
@@ -113,7 +110,7 @@ export default function DialogEditInventory({ book }: Props) {
                   id="title"
                   className="pl-8"
                   placeholder="Ingrese el título"
-                  {...register("title")} // Registra el campo con react-hook-form
+                  {...register("title")}
                 />
               </div>
             </div>
@@ -128,14 +125,14 @@ export default function DialogEditInventory({ book }: Props) {
                   id="author"
                   className="pl-8"
                   placeholder="Ingrese el autor"
-                  {...register("author")} // Registra el campo con react-hook-form
+                  {...register("author")}
                 />
               </div>
             </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="genre">Género</Label>
               <Select
-                defaultValue={book.genre_id.toString()} // Usa defaultValue para el valor inicial
+                defaultValue={book.genre_id.toString()}
                 onValueChange={(value) => {
                   setValue("genre_id", value);
                 }}
@@ -165,7 +162,7 @@ export default function DialogEditInventory({ book }: Props) {
                   >
                     <CalendarIcon className="text-primary" />
                     {book.published_date ? (
-                      format(book.published_date, "dd MMM, yyyy") // Formato de día, mes y año
+                      format(book.published_date, "dd MMM, yyyy")
                     ) : (
                       <span>Selecciona una fecha</span>
                     )}
@@ -182,7 +179,7 @@ export default function DialogEditInventory({ book }: Props) {
                         ? format(selectedDate, "dd MMM yyyy")
                         : "";
 
-                      setValue("published_date", formattedDate); // Usa setValue para actualizar
+                      setValue("published_date", formattedDate);
                     }}
                     initialFocus
                   />
@@ -200,7 +197,7 @@ export default function DialogEditInventory({ book }: Props) {
                   id="description"
                   className="pl-8"
                   placeholder="Ingrese la descripción"
-                  {...register("description")} // Registra el campo con react-hook-form
+                  {...register("description")}
                 />
               </div>
             </div>
@@ -215,7 +212,7 @@ export default function DialogEditInventory({ book }: Props) {
                   id="isbn"
                   className="pl-8"
                   placeholder="Ingrese el ISBN"
-                  {...register("isbn")} // Registra el campo con react-hook-form
+                  {...register("isbn")}
                 />
               </div>
             </div>
@@ -225,7 +222,7 @@ export default function DialogEditInventory({ book }: Props) {
                 id="pages"
                 type="number"
                 placeholder="Número de páginas"
-                {...register("pages")} // Registra el campo con react-hook-form
+                {...register("pages")}
               />
             </div>
             <div className="flex flex-col space-y-2.5">
@@ -239,7 +236,7 @@ export default function DialogEditInventory({ book }: Props) {
                   id="language"
                   className="pl-8"
                   placeholder="Ingrese el lenguaje"
-                  {...register("language")} // Registra el campo con react-hook-form
+                  {...register("language")}
                 />
               </div>
             </div>
@@ -254,7 +251,7 @@ export default function DialogEditInventory({ book }: Props) {
                   id="publisher"
                   className="pl-8"
                   placeholder="Ingrese la editorial"
-                  {...register("publisher")} // Registra el campo con react-hook-form
+                  {...register("publisher")}
                 />
               </div>
             </div>
@@ -262,8 +259,8 @@ export default function DialogEditInventory({ book }: Props) {
               <Label htmlFor="available">Estado </Label>
               <Switch
                 id="available"
-                checked={watch("available") || book.available} // Usa watch para obtener el valor
-                onCheckedChange={(checked) => setValue("available", checked)} // Usa setValue para actualizar
+                checked={watch("available") || book.available}
+                onCheckedChange={(checked) => setValue("available", checked)}
               />
             </div>
 
@@ -279,7 +276,7 @@ export default function DialogEditInventory({ book }: Props) {
                   type="number"
                   className="pl-8"
                   placeholder="Ingrese la cantidad"
-                  {...register("available_count")} // Registra el campo con react-hook-form
+                  {...register("available_count")}
                 />
               </div>
             </div>

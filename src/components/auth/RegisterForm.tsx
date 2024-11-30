@@ -64,7 +64,7 @@ export default function RegisterForm() {
         email,
         password,
         photo: photoUrl,
-        role: "admin",
+        role: "user",
       });
 
       if (insertError) {

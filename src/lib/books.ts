@@ -1,4 +1,4 @@
-import { Book } from "@/app/dashboard/inventory/model/book";
+import { Book } from "@/models/book";
 import { supabase } from "./supabaseClient";
 
 export const addBook = async (bookData: Book) => {
@@ -76,6 +76,14 @@ export const updateBook = async (bookId: number, bookData: Book) => {
 };
 
 export const deleteBook = async (bookId: number) => {
+  const isConfirmed = window.confirm(
+    `¿Estás seguro de que quieres eliminar este libro?`
+  );
+
+  if (!isConfirmed) {
+    return;
+  }
+
   try {
     const { data, error } = await supabase
       .from("books")
@@ -88,8 +96,7 @@ export const deleteBook = async (bookId: number) => {
       throw new Error(errorMessage);
     }
 
-    alert(`Libro con ID: ${bookId} eliminado exitosamente.`);
-
+    alert(`Libro se ha eliminado exitosamente.`);
     return data;
   } catch (error) {
     if (error instanceof Error) {

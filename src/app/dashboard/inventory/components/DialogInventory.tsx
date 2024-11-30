@@ -42,7 +42,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { useForm } from "react-hook-form";
-import { Book } from "../model/book";
+import { Book } from "../../../../models/book";
 import { addBook } from "@/lib/books";
 
 interface Genre {

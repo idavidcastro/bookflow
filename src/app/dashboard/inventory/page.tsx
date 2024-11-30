@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { DataTableInventory } from "./components/DataTableInventory";
-import { Book } from "./model/book";
+import { Book } from "@/models/book";
 import { addBook, deleteBook, getBooks } from "@/lib/books";
 
 export default function Inventory() {
@@ -25,16 +25,6 @@ export default function Inventory() {
   const fetchBooks = async () => {
     const booksData = await getBooks();
     setBooks(booksData);
-  };
-
-  const handleAddBook = async () => {
-    await addBook(newBook);
-    fetchBooks();
-  };
-
-  const handleDeleteBook = async (bookId: number) => {
-    await deleteBook(bookId);
-    fetchBooks();
   };
 
   useEffect(() => {
