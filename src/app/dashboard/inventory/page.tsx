@@ -1,65 +1,45 @@
-import React from "react";
-import { DataTableInventory, Payment } from "./components/DataTableInventory";
-
-const otherData: Payment[] = [
-  {
-    id: "a1b2c3",
-    amount: 500,
-    status: "pending",
-    email: "john.doe@example.com",
-  },
-  {
-    id: "d4e5f6",
-    amount: 150,
-    status: "failed",
-    email: "jane.doe@example.com",
-  },
-];
+"use client";
+import React, { useEffect, useState } from "react";
+import { DataTableInventory } from "./components/DataTableInventory";
+import { Book } from "./model/book";
+import { addBook, deleteBook, getBooks } from "@/lib/books";
 
 export default function Inventory() {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [newBook, setNewBook] = useState({
+    title: "",
+    author: "",
+    genre: "",
+    description: "",
+    published_date: "",
+    available_count: 0,
+    total_count: 0,
+  });
+
+  const fetchBooks = async () => {
+    const booksData = await getBooks();
+    setBooks(booksData);
+  };
+
+  const handleAddBook = async () => {
+    await addBook(newBook);
+    fetchBooks(); // Actualizar la lista de libros después de agregar uno
+  };
+
+  const handleDeleteBook = async (bookId: number) => {
+    await deleteBook(bookId);
+    fetchBooks();
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
   return (
     <div className="m-4 border rounded-md p-4">
       <h2 className="text-4xl font-roboto font-semibold pb-4">Inventario</h2>
       <hr />
-      <DataTableInventory data={otherData} />
+      <DataTableInventory data={books} />
     </div>
   );
 }
-
-// export const columns: ColumnDef<Payment>[] = [
-//   {
-//     accessorKey: "status",
-//     header: "Status",
-//   },
-//   {
-//     accessorKey: "email",
-//     header: "Email",
-//   },
-//   {
-//     accessorKey: "amount",
-//     header: "Amount",
-//   },
-// ];
-
-// type Payment = {
-//   id: string;
-//   amount: number;
-//   status: "pending" | "processing" | "success" | "failed";
-//   email: string;
-// };
-
-// export const data: Payment[] = [
-//   {
-//     id: "728ed52f",
-//     amount: 100,
-//     status: "pending",
-//     email: "m@example.com",
-//   },
-//   {
-//     id: "489e1d42",
-//     amount: 125,
-//     status: "processing",
-//     email: "example@gmail.com",
-//   },
-//   // ...
-// ];

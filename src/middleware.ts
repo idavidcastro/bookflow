@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 
 export async function middleware(req: Request) {
   const cookies = req.headers.get("cookie");
-  console.log("Cabeceras de la solicitud:", cookies);
 
   const userCookie = cookies
     ?.split(";")
@@ -27,9 +26,6 @@ export async function middleware(req: Request) {
 
   const role = user.role;
 
-  console.log("rol del usuario", role);
-
-  // Define las rutas permitidas para cada rol
   const routesForUser = [
     "/dashboard/books",
     "/dashboard/loans",
@@ -48,12 +44,10 @@ export async function middleware(req: Request) {
     "/dashboard/settings",
   ];
 
-  // Verifica si la ruta solicitada está permitida para el rol del usuario
   if (
     (role === "user" && !routesForUser.includes(pathname)) ||
     (role === "admin" && !routesForAdmin.includes(pathname))
   ) {
-    // Previene bucles de redireccionamiento comprobando si la URL actual ya es '/dashboard'
     if (pathname !== "/dashboard") {
       const dashboardUrl = new URL("/dashboard", req.url);
       return NextResponse.redirect(dashboardUrl);

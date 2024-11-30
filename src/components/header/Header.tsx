@@ -19,9 +19,8 @@ export default function Header() {
     { text: "Thsi is another notf", date: "24/11/24", read: false },
   ]);
   return (
-    <div className="grid grid-cols-2 gap-4 p-4 border-b">
-      <CommandDemo />
-      <div className="flex items-center justify-end">
+    <div className="flex gap-4 p-4 border-b justify-end">
+      <div className=" ">
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button className="relative" variant="outline" size="icon">
