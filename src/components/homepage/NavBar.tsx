@@ -13,20 +13,7 @@ const Navbar = () => {
           <p className="text-xl font-semibold font-roboto">BookFlow</p>
         </div>
       </div>
-      <div className="hidden md:flex space-x-6 text-sm">
-        <a href="/" className=" hover:text-primary">
-          Inicio
-        </a>
-        <a href="/" className="hover:text-primary">
-          Servicios
-        </a>
-        <a href="/" className="hover:text-primary">
-          Nosotros
-        </a>
-        <a href="/" className="hover:text-primary">
-          Contacto
-        </a>
-      </div>
+
       <div className="flex items-center space-x-4 text-sm">
         <Link href="/auth/login" passHref>
           <Button variant="primary" className="ml-auto">

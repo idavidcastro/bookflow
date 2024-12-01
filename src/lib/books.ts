@@ -51,6 +51,33 @@ export const getBooks = async () => {
   return data;
 };
 
+export const getAvailableBooks = async (userId: string) => {
+  // Obtenemos los IDs de los libros que están prestados por el usuario
+  const { data: transactions, error: transactionError } = await supabase
+    .from("transactions")
+    .select("book_id")
+    .eq("user_id", userId) // Filtra por el usuario actual
+    .is("returned_at", null); // Solo los libros que no han sido devueltos
+
+  if (transactionError) throw new Error(transactionError.message);
+
+  // Extraemos solo los IDs de los libros prestados
+  const borrowedBookIds = transactions.map(
+    (transaction) => transaction.book_id
+  );
+
+  // Obtenemos los libros disponibles que no están en los libros prestados
+  const { data, error } = await supabase
+    .from("books")
+    .select("*")
+    .eq("available", true)
+    .gt("available_count", 0)
+    .not("id", "in", `(${borrowedBookIds.join(",")})`); // Excluye los libros prestados
+
+  if (error) throw new Error(error.message);
+  return data;
+};
+
 export const updateBook = async (bookId: number, bookData: Book) => {
   try {
     const { data, error } = await supabase

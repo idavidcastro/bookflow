@@ -35,7 +35,7 @@ export function CommandDemo() {
         <CommandInput placeholder="Buscar..." />
         {open && (
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty> Sin resultados.</CommandEmpty>
             <CommandGroup heading="Suggestions">
               <CommandItem>
                 <Calendar />

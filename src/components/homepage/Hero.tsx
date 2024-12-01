@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import Image from "next/image";
+import banner from "@/assets/home/hero.jpg";
 
 const Hero = () => {
   const router = useRouter();
@@ -13,15 +15,13 @@ const Hero = () => {
           LA MEJOR BIBLIOTECA QUE TENDRÁS
         </p>
         <br />
-        <h1 className="font-spectral font-bold text-7xl">
-          Organiza tus libros de la mejor manera
-        </h1>
+        <h1 className="font-spectral font-bold text-7xl">BookFlow - App</h1>
         <br />
         <p className="font-monserrat">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Delectus
-          voluptatem illo et eaque fugit! Modi sequi, possimus ipsum sed nam
-          fugit nulla maxime consequatur officiis labore nemo non laudantium
-          vitae.
+          Con BookBlow, facilita la administración de tu biblioteca de manera
+          sencilla. Controla libros, usuarios y préstamos en una plataforma
+          fácil de usar, mejorando la organización de tu día a día. Ideal para
+          bibliotecas que buscan una solución práctica y accesible.
         </p>
         <br />
         <div className="flex gap-x-2">
@@ -39,6 +39,10 @@ const Hero = () => {
             </Button>
           </Link>
         </div>
+      </div>
+
+      <div className="flex justify-center items-center">
+        <Image src={banner} alt="banner" className="w-[500px] flex" />
       </div>
     </div>
   );
