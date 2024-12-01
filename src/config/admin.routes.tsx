@@ -22,9 +22,4 @@ export const adminRoutes: View[] = [
     to: "/dashboard/users",
     icon: <User />,
   },
-  {
-    title: "Estadísticas",
-    to: "/dashboard/statistics",
-    icon: <ChartNoAxesCombined />,
-  },
 ];

@@ -73,7 +73,9 @@ export default function RegisterForm() {
         );
       }
 
-      alert("Usuario registrado exitosamente");
+      alert(
+        "Usuario registrado exitosamente, recuerde confirmar su correo electrónico"
+      );
     } catch (error: any) {
       console.error(error);
       alert(error.message);

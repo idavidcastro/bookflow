@@ -41,15 +41,37 @@ export const getUserTransactions = async (userId: string) => {
     .eq("user_id", userId);
 
   if (error) throw new Error(error.message);
+
   return data;
 };
 
-export const returnBook = async (transactionId: number) => {
-  const { data, error } = await supabase
-    .from("transactions")
-    .update({ returned_at: new Date() })
-    .eq("id", transactionId);
+export const getAllTransactions = async () => {
+  const { data, error } = await supabase.from("transactions").select("*");
 
   if (error) throw new Error(error.message);
+
+  return data;
+};
+export const returnBook = async (transactionId: number) => {
+  const isConfirmed = window.confirm("¿Desea completar esta transacción?");
+
+  if (!isConfirmed) {
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("transactions")
+    .update({
+      returned_at: new Date(),
+      status: "Devuelto",
+    })
+    .eq("id", transactionId);
+
+  if (error) {
+    alert(`Error: ${error.message}`);
+    return;
+  }
+
+  alert("El libro ha sido devuelto al stock.");
   return data;
 };

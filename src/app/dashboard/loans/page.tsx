@@ -20,7 +20,7 @@ export default function Loans() {
     }
   }, [user]);
 
-  const fetchBooks = async () => {
+  const fetchTransactions = async () => {
     if (userId) {
       const transactionData = await getUserTransactions(userId);
       setTransaction(transactionData);
@@ -28,7 +28,7 @@ export default function Loans() {
   };
 
   useEffect(() => {
-    fetchBooks();
+    fetchTransactions();
   }, [userId]);
 
   return (

@@ -2,34 +2,37 @@
 import React, { useEffect, useState } from "react";
 import { DataTableBooks } from "./components/DataTableBooks";
 import { Book } from "@/models/book";
-import { addBook, deleteBook, getAvailableBooks, getBooks } from "@/lib/books";
+import { getAvailableBooks } from "@/lib/books";
 
 export default function Books() {
   const [books, setBooks] = useState<Book[]>([]);
-  const [newBook, setNewBook] = useState({
-    id: 0,
-    title: "",
-    author: "",
-    genre: "",
-    description: "",
-    published_date: "",
-    isbn: "",
-    pages: 0,
-    language: "",
-    publisher: "",
-    available: true,
-    available_count: 0,
-    total_count: 0,
-  });
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const user = localStorage.getItem("user");
+
+  useEffect(() => {
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setUserId(parsedUser.id);
+    } else {
+      console.error(
+        "No se ha encontrado el objeto de usuario en localStorage."
+      );
+    }
+  }, [user]);
 
   const fetchBooks = async () => {
-    const booksData = await getAvailableBooks();
-    setBooks(booksData);
+    if (userId) {
+      const booksData = await getAvailableBooks(userId);
+      setBooks(booksData);
+    }
   };
 
   useEffect(() => {
-    fetchBooks();
-  }, []);
+    if (userId) {
+      fetchBooks();
+    }
+  }, [userId]);
 
   return (
     <div className="m-4 border rounded-md p-4">

@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Trash2, UserRound } from "lucide-react";
-import { deleteBook } from "@/lib/books";
-import { User } from "@/models/user";
-// import DialogEditLoans from "./DialogEditLoan";
+import { ArrowUpDown, Check } from "lucide-react";
 import { deleteUser } from "@/lib/users";
 import { Transaction } from "@/models/transaction";
-// import DialogEditLoan from "./DialogEditLoan";
+import { returnBook } from "@/lib/transactions";
 
 export const columns: ColumnDef<Transaction>[] = [
+  {
+    accessorKey: "user_id",
+    header: "Usuario",
+    cell: ({ row }) => <div>{row.getValue("user_id")}</div>,
+  },
   {
     accessorKey: "book_id",
     header: ({ column }) => {
@@ -45,26 +47,25 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Fecha de devolución",
     cell: ({ row }) => <div>{row.getValue("returned_at")}</div>,
   },
-  //   {
-  //     id: "actions",
-  //     enableHiding: false,
-  //     header: () => <div className="text-right">Opciones</div>,
-  //     cell: ({ row }) => {
-  //       const user = row.original;
+  {
+    id: "actions",
+    enableHiding: false,
+    header: () => <div className="text-right">Opciones</div>,
+    cell: ({ row }) => {
+      const transaction = row.original;
 
-  //       return (
-  //         <div className="flex justify-end space-x-2">
-  //           <DialogEditLoan user={user} />
-  //           <Button
-  //             variant="ghost"
-  //             className="h-8 w-8 p-0"
-  //             onClick={() => deleteUser(user.id)}
-  //           >
-  //             <Trash2 className="h-4 w-4 text-redCustom" />
-  //             <span className="sr-only">Eliminar</span>
-  //           </Button>
-  //         </div>
-  //       );
-  //     },
-  //   },
+      return (
+        <div className="flex justify-end space-x-2">
+          <Button
+            variant="ghost"
+            className="h-8 w-8 p-0"
+            onClick={() => returnBook(transaction.id)}
+          >
+            <Check className="h-4 w-4 text-greenCustom" />
+            <span className="sr-only">Completar</span>
+          </Button>
+        </div>
+      );
+    },
+  },
 ];

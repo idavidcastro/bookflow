@@ -12,9 +12,4 @@ export const userRoutes = [
     to: "/dashboard/loans",
     icon: <BookmarkCheck />,
   },
-  {
-    title: "Reservas",
-    to: "/dashboard/reservations",
-    icon: <NotepadText />,
-  },
 ];
