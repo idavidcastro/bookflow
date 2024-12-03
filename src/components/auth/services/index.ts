@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 
 export const uploadPhotoToStorage = async (file: File, userId: string) => {
-  const filePath = `${userId}/${file.name}`;
+  const filePath = `users/${userId}/${file.name}`;
   const { data, error } = await supabase.storage
     .from("avatars")
     .upload(filePath, file);
@@ -22,7 +22,7 @@ export const updateUserWithPhotoUrl = async (
   photoUrl: string
 ) => {
   const { data, error } = await supabase
-    .from("users") // Cambia 'users' por el nombre de tu tabla
+    .from("users")
     .update({ photo: photoUrl })
     .eq("id", userId);
 

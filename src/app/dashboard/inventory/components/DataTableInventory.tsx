@@ -180,7 +180,7 @@ export function DataTableInventory({ data }: DataTableProps) {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            Siguiente
           </Button>
         </div>
       </div>

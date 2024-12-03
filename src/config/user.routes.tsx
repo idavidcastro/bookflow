@@ -8,7 +8,7 @@ export const userRoutes = [
     icon: <BookOpen />,
   },
   {
-    title: "Mis préstamos",
+    title: "Mis transacciones",
     to: "/dashboard/loans",
     icon: <BookmarkCheck />,
   },

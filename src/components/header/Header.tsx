@@ -23,7 +23,7 @@ export default function Header() {
       <div className=" ">
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Button className="relative" variant="outline" size="icon">
+            {/* <Button className="relative" variant="outline" size="icon">
               <div
                 className={`absolute -top-1 -right-1 h-3 w-3 rounded-full my-1 ${
                   notification.find((x: any) => x.read === true)
@@ -32,7 +32,7 @@ export default function Header() {
                 }`}
               ></div>
               <BellIcon className="h-4 w-4" />
-            </Button>
+            </Button> */}
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {notification.map((item: any, key: number) => (

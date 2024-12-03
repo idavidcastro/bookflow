@@ -4,7 +4,6 @@ import CardWrapper from "./components/CardWrapper";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,7 +16,6 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { z } from "zod";
 import { supabase } from "@/lib/supabaseClient";
-import { BsImages, BsPaperclip } from "react-icons/bs";
 import { uploadPhotoToStorage } from "./services";
 
 export default function RegisterForm() {

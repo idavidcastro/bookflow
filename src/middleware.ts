@@ -29,19 +29,14 @@ export async function middleware(req: Request) {
   const routesForUser = [
     "/dashboard/books",
     "/dashboard/loans",
-    "/dashboard/reservations",
-    "/dashboard/help",
     "/dashboard/profile",
-    "/dashboard/settings",
   ];
   const routesForAdmin = [
     "/dashboard/inventory",
     "/dashboard/transactions",
     "/dashboard/users",
     "/dashboard/statistics",
-    "/dashboard/help",
     "/dashboard/profile",
-    "/dashboard/settings",
   ];
 
   if (

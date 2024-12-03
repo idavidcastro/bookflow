@@ -24,7 +24,6 @@ export const addBook = async (bookData: Book) => {
       return;
     }
 
-    console.log("Género válido y ISBN único. Insertando el libro...");
     const { data, error } = await supabase.from("books").insert([bookData]);
 
     if (error) {
@@ -43,6 +42,24 @@ export const addBook = async (bookData: Book) => {
     }
     throw error;
   }
+};
+export const uploadBookPhotoToStorage = async (file: File, bookId: number) => {
+  console.log("esa es la ", file);
+
+  const filePath = `books/${bookId}/${file.name}`;
+  const { data, error } = await supabase.storage
+    .from("avatars")
+    .upload(filePath, file);
+
+  if (error) {
+    throw new Error(`Error al subir la imagen: ${error.message}`);
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from("avatars")
+    .getPublicUrl(filePath);
+
+  return publicUrlData.publicUrl;
 };
 
 export const getBooks = async () => {
