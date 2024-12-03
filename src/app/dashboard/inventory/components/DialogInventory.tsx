@@ -1,7 +1,6 @@
 "use client";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-
+import { CalendarIcon, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -44,6 +43,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useForm } from "react-hook-form";
 import { Book } from "../../../../models/book";
 import { addBook } from "@/lib/books";
+import InputImage from "./InputImage";
 
 interface Genre {
   id: number;
@@ -54,6 +54,7 @@ export default function DialogInventory() {
   const [open, setOpen] = useState(false);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [date, setDate] = useState<Date>();
+  const [image, setImage] = useState<File | null>(null);
 
   const { register, handleSubmit, setValue, watch } = useForm<Book>({
     defaultValues: {
@@ -74,8 +75,14 @@ export default function DialogInventory() {
     fetchGenres();
   }, []);
 
-  const handleSave = (data: Book) => {
-    addBook(data);
+  const handleImage = () => {};
+
+  const handleSave = async (data: Book) => {
+    // addBook(data);
+    // let photoUrl=""
+    // if(image){
+    //   photoUrl= await uploadBookPhotoToStorage(data.)
+    // }
     setOpen(false);
     fetchGenres();
   };
@@ -93,10 +100,24 @@ export default function DialogInventory() {
             hayas terminado.
           </DialogDescription>
         </DialogHeader>
-        <form
-          onSubmit={handleSubmit(handleSave)} // Llama a handleSave con los datos del formulario
-        >
-          <div className="grid grid-cols-2 gap-6 py-6">
+        <form onSubmit={handleSubmit(handleSave)}>
+          <div className="grid grid-cols-2 gap-6 py-2">
+            <div className="flex flex-col space-y-2.5">
+              <Label htmlFor="title">Imagen</Label>
+              <div className="relative">
+                <Upload
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 text-primary"
+                  size={18}
+                />
+                <Input
+                  id="image"
+                  type="file"
+                  className="pl-8"
+                  hidden
+                  onChange={handleImage}
+                />
+              </div>
+            </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="title">Título</Label>
               <div className="relative">
@@ -146,6 +167,22 @@ export default function DialogInventory() {
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="flex flex-col space-y-2.5 col-span-2">
+              <Label htmlFor="description">Descripción</Label>
+              <div className="relative">
+                <FileText
+                  className="absolute left-2 top-3 text-primary"
+                  size={18}
+                />
+                <Textarea
+                  id="description"
+                  className="pl-8"
+                  placeholder="Ingrese la descripción"
+                  {...register("description")}
+                />
+              </div>
+            </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="publicationDate">Fecha de publicación</Label>
               <Popover>
@@ -183,44 +220,31 @@ export default function DialogInventory() {
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="flex flex-col space-y-2.5 col-span-2">
-              <Label htmlFor="description">Descripción</Label>
-              <div className="relative">
-                <FileText
-                  className="absolute left-2 top-3 text-primary"
-                  size={18}
-                />
-                <Textarea
-                  id="description"
-                  className="pl-8"
-                  placeholder="Ingrese la descripción"
-                  {...register("description")}
-                />
+            <div className="flex gap-4">
+              <div className="flex flex-col space-y-2.5">
+                <Label htmlFor="isbn">ISBN</Label>
+                <div className="relative">
+                  <Hash
+                    className="absolute left-2 top-1/2 transform -translate-y-1/2 text-primary"
+                    size={18}
+                  />
+                  <Input
+                    id="isbn"
+                    className="pl-8"
+                    placeholder="Ingrese el ISBN"
+                    {...register("isbn")}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col space-y-2.5">
-              <Label htmlFor="isbn">ISBN</Label>
-              <div className="relative">
-                <Hash
-                  className="absolute left-2 top-1/2 transform -translate-y-1/2 text-primary"
-                  size={18}
-                />
+              <div className="flex flex-col space-y-2.5">
+                <Label htmlFor="pages">Páginas</Label>
                 <Input
-                  id="isbn"
-                  className="pl-8"
-                  placeholder="Ingrese el ISBN"
-                  {...register("isbn")}
+                  id="pages"
+                  type="number"
+                  placeholder="Páginas del libro"
+                  {...register("pages")}
                 />
               </div>
-            </div>
-            <div className="flex flex-col space-y-2.5">
-              <Label htmlFor="pages">Páginas</Label>
-              <Input
-                id="pages"
-                type="number"
-                placeholder="Número de páginas"
-                {...register("pages")}
-              />
             </div>
             <div className="flex flex-col space-y-2.5">
               <Label htmlFor="language">Lenguaje</Label>
@@ -278,7 +302,7 @@ export default function DialogInventory() {
               </div>
             </div>
           </div>
-          <DialogFooter className="w-full">
+          <DialogFooter className="mt-4">
             <Button type="submit" variant="primary">
               Guardar
             </Button>

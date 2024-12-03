@@ -75,11 +75,11 @@ export default function NavUser() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="flex w-full p-2 h-[60px] items-center justify-start"
+          className="flex w-full p-2 h-[70px] items-center justify-start"
         >
-          <div className="flex gap-2">
-            <div className="avatar rounded-full h-10 w-10 bg-emerald-500 text-white font-[700] flex items-center justify-center">
-              <Avatar>
+          <div className="flex gap-2 items-center">
+            <div className="avatar rounded-full h-12 w-12 bg-primary text-white font-[700] flex items-center justify-center">
+              <Avatar className="w-full h-full">
                 {userData.photo ? (
                   <AvatarImage src={userData.photo} />
                 ) : (
@@ -91,7 +91,7 @@ export default function NavUser() {
               </Avatar>
             </div>
             <div className="grow">
-              <p className="text-[16px] font-semibold text-start">
+              <p className="text-[18px] font-semibold text-start">
                 {userData.name} {userData.lastName}
               </p>
               <p className="text-[12px] text-neutral-500 text-start">
@@ -112,29 +112,7 @@ export default function NavUser() {
             >
               <span>Perfil</span>
               <DropdownMenuShortcut>
-                <User className="w-[18px]" />
-              </DropdownMenuShortcut>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="flex justify-between items-center">
-            <Link
-              href={"/dashboard/settings"}
-              className="flex w-full justify-between items-center"
-            >
-              <span>Ajustes</span>
-              <DropdownMenuShortcut>
-                <Settings className="w-[18px]" />
-              </DropdownMenuShortcut>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="flex justify-between items-center">
-            <Link
-              href={"/dashboard/help"}
-              className="flex w-full justify-between items-center"
-            >
-              <span>Ayuda</span>
-              <DropdownMenuShortcut>
-                <Info className="w-[18px]" />
+                <User className="w-[18px] text-primary" />
               </DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>

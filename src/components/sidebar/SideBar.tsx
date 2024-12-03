@@ -44,15 +44,15 @@ export default function SideBar() {
   }, [type]);
 
   return (
-    <div className="fixed flex flex-col gap-4 w-[300px] min-w-[300px] border-r min-h-screen p-4">
+    <div className="fixed flex flex-col  w-[300px] min-w-[300px] border-r min-h-screen p-4">
       <div>
         <NavHeader />
       </div>
-      <div className="grow">
+      <div className="grow mt-4">
         <Command style={{ overflow: "visible" }}>
           <CommandList style={{ overflow: "visible" }}>
             {views.map((view, key) => (
-              <CommandItem key={key} className="flex gap-2 cursor-pointer">
+              <CommandItem key={key} className="flex gap-2 cursor-pointer ">
                 <Link href={view.to} className="flex gap-2">
                   <span className="text-primary">{view.icon}</span>
                   {view.title}

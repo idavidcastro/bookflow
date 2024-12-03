@@ -81,7 +81,7 @@ export const columns: ColumnDef<Book>[] = [
 
   {
     accessorKey: "available_count",
-    header: "Disponible",
+    header: "Disponibles",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("available_count")}</div>
     ),
@@ -89,15 +89,15 @@ export const columns: ColumnDef<Book>[] = [
   {
     id: "actions",
     enableHiding: false,
-    header: () => <div className="text-right">Opciones</div>,
+    header: () => <div className="text-right">Prestar</div>,
     cell: ({ row }) => {
       const book = row.original;
 
       const handleClick = () => {
-        const user = localStorage.getItem("user"); // Obtener el objeto 'user' desde localStorage
+        const user = localStorage.getItem("user");
         if (user) {
-          const userId = JSON.parse(user).id; // Acceder al 'id' del usuario
-          handleBorrow(book.id, userId); // Llamar a handleBorrow con el bookId y userId
+          const userId = JSON.parse(user).id;
+          handleBorrow(book.id, userId);
         } else {
           console.error(
             "No se ha encontrado el objeto de usuario en localStorage."
@@ -107,11 +107,7 @@ export const columns: ColumnDef<Book>[] = [
 
       return (
         <div className="flex justify-end space-x-2">
-          <Button
-            variant="ghost"
-            className="h-8 w-8 p-0"
-            onClick={handleClick} // Llamamos a handleClick en el evento de click
-          >
+          <Button variant="ghost" className="h-8 w-8 p-0" onClick={handleClick}>
             <BookmarkCheck className="h-4 w-4 text-primary" />
             <span className="sr-only">Reservar</span>
           </Button>
