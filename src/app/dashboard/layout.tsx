@@ -1,4 +1,3 @@
-import Header from "@/components/header/Header";
 import SideBar from "@/components/sidebar/SideBar";
 export default function DashboardLayout({
   children,
@@ -10,7 +9,6 @@ export default function DashboardLayout({
       <SideBar />
 
       <main className="grid w-full h-full pl-[300px] items-center">
-        <Header />
         {children}
       </main>
     </div>

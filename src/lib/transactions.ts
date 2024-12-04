@@ -28,7 +28,7 @@ export const handleBorrow = async (bookId: number, userId: string) => {
     }
 
     alert(
-      "Transacción exitosa! Tiene 7 días para devolver el libro a partir de la fecha de la fecha de hoy"
+      "Transacción exitosa! Tiene 7 días para devolver el libro a partir de la fecha de hoy"
     );
     return data;
   } catch (error) {
