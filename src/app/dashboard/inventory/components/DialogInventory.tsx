@@ -42,7 +42,7 @@ import {
 import { supabase } from "@/lib/supabaseClient";
 import { useForm } from "react-hook-form";
 import { Book } from "../../../../models/book";
-import { addBook } from "@/lib/books";
+import { addBook, uploadBookPhotoToStorage } from "@/lib/books";
 import InputImage from "./InputImage";
 
 interface Genre {
@@ -75,14 +75,20 @@ export default function DialogInventory() {
     fetchGenres();
   }, []);
 
-  const handleImage = () => {};
+  const handleImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImage(file);
+    }
+  };
 
   const handleSave = async (data: Book) => {
-    // addBook(data);
-    // let photoUrl=""
-    // if(image){
-    //   photoUrl= await uploadBookPhotoToStorage(data.)
-    // }
+    let photoUrl = "";
+    if (image) {
+      photoUrl = await uploadBookPhotoToStorage(image);
+    }
+
+    addBook({ ...data, photo: photoUrl });
     setOpen(false);
     fetchGenres();
   };

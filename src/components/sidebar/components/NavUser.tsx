@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { Info, Settings, User } from "lucide-react";
+import { Info, Settings, User, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import Cookies from "js-cookie";
@@ -79,15 +79,14 @@ export default function NavUser() {
         >
           <div className="flex gap-2 items-center">
             <div className="avatar rounded-full h-12 w-12 bg-primary text-white font-[700] flex items-center justify-center">
-              <Avatar className="w-full h-full">
+              <Avatar className="w-full h-full items-center justify-center">
                 {userData.photo ? (
                   <AvatarImage src={userData.photo} />
                 ) : (
-                  <AvatarImage src={ivan.src} /> // Imagen por defecto
+                  <div className="h-10 w-10 flex items-center justify-center bg-blue-100 rounded-full">
+                    <UserRound size={20} className="text-primary" />
+                  </div>
                 )}
-                <AvatarFallback>
-                  {userData.name.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
               </Avatar>
             </div>
             <div className="grow">
@@ -103,20 +102,6 @@ export default function NavUser() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem className="flex justify-between items-center">
-            <Link
-              href={"/dashboard/profile"}
-              className="flex w-full justify-between items-center"
-            >
-              <span>Perfil</span>
-              <DropdownMenuShortcut>
-                <User className="w-[18px] text-primary" />
-              </DropdownMenuShortcut>
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           style={{ color: "#dc2626" }}

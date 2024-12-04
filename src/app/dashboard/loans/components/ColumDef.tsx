@@ -1,14 +1,81 @@
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Trash2, UserRound } from "lucide-react";
-import { deleteBook } from "@/lib/books";
-import { User } from "@/models/user";
-// import DialogEditLoans from "./DialogEditLoan";
-import { deleteUser } from "@/lib/users";
+import { ArrowUpDown, Images } from "lucide-react";
 import { Transaction } from "@/models/transaction";
-// import DialogEditLoan from "./DialogEditLoan";
+import { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { supabase } from "@/lib/supabaseClient";
+
+const fetchBookDetails = async (bookId: number) => {
+  try {
+    const { data, error } = await supabase
+      .from("books")
+      .select("title, photo")
+      .eq("id", bookId)
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data; // Esto debería devolver { name, photo }
+  } catch (error: any) {
+    console.error(
+      "Error consultando los datos de los libros:",
+      error.message || error
+    );
+    return null;
+  }
+};
 
 export const columns: ColumnDef<Transaction>[] = [
+  {
+    accessorKey: "photo",
+    header: "",
+    cell: ({ row }: any) => {
+      const [isOpen, setIsOpen] = useState(false);
+      const [bookDetails, setBookDetails] = useState<{
+        photo: string;
+      } | null>(null);
+
+      useEffect(() => {
+        const bookId = row.getValue("book_id");
+        fetchBookDetails(bookId).then((details) => setBookDetails(details));
+      }, [row]);
+
+      return (
+        <>
+          <div className="flex justify-center items-center">
+            {bookDetails?.photo ? (
+              <img
+                src={bookDetails.photo}
+                alt="Book photo"
+                className="h-20 w-14 object-cover cursor-pointer"
+                onClick={() => setIsOpen(true)}
+              />
+            ) : (
+              <div className="h-20 w-14 flex items-center justify-center bg-blue-100 ">
+                <Images size={20} className="text-primary" />
+              </div>
+            )}
+          </div>
+
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogContent className="w-96 h-auto sm:rounded-none">
+              <DialogTitle>
+                <p className="text-lg font-roboto">Imagen del libro</p>
+              </DialogTitle>
+              <img
+                src={bookDetails?.photo || ""}
+                alt="Full size photo"
+                className="w-full h-auto object-contain"
+              />
+            </DialogContent>
+          </Dialog>
+        </>
+      );
+    },
+  },
   {
     accessorKey: "book_id",
     header: ({ column }) => {
@@ -22,7 +89,20 @@ export const columns: ColumnDef<Transaction>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue("book_id")}</div>,
+    cell: ({ row }) => {
+      const [bookName, setBookName] = useState<string | null>(null);
+
+      useEffect(() => {
+        const bookId = row.getValue("book_id") as number; // Asegúrate de que es un número
+        fetchBookDetails(bookId).then((details) => {
+          if (details) {
+            setBookName(details.title); // Usamos el nombre del libro
+          }
+        });
+      }, [row]);
+
+      return <div>{bookName || "Cargando..."}</div>; // Mostrar el nombre del libro
+    },
   },
 
   {
@@ -45,26 +125,4 @@ export const columns: ColumnDef<Transaction>[] = [
     header: "Fecha de devolución",
     cell: ({ row }) => <div>{row.getValue("returned_at")}</div>,
   },
-  //   {
-  //     id: "actions",
-  //     enableHiding: false,
-  //     header: () => <div className="text-right">Opciones</div>,
-  //     cell: ({ row }) => {
-  //       const user = row.original;
-
-  //       return (
-  //         <div className="flex justify-end space-x-2">
-  //           <DialogEditLoan user={user} />
-  //           <Button
-  //             variant="ghost"
-  //             className="h-8 w-8 p-0"
-  //             onClick={() => deleteUser(user.id)}
-  //           >
-  //             <Trash2 className="h-4 w-4 text-redCustom" />
-  //             <span className="sr-only">Eliminar</span>
-  //           </Button>
-  //         </div>
-  //       );
-  //     },
-  //   },
 ];
