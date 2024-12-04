@@ -1,11 +1,53 @@
 import { Button } from "@/components/ui/button";
 import { Book } from "@/models/book";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Trash2 } from "lucide-react";
+import { ArrowUpDown, Images, Trash2 } from "lucide-react";
 import DialogEditInventory from "./DialogEditInventary";
 import { deleteBook } from "@/lib/books";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
 
 export const columns: ColumnDef<Book>[] = [
+  {
+    accessorKey: "photo",
+    header: "",
+    cell: ({ row }: any) => {
+      const photoUrl = row.getValue("photo") as string;
+      const [isOpen, setIsOpen] = useState(false);
+
+      return (
+        <>
+          <div className="flex justify-center items-center">
+            {photoUrl ? (
+              <img
+                src={photoUrl}
+                alt="User avatar"
+                className="h-20 w-14 object-cover cursor-pointer"
+                onClick={() => setIsOpen(true)}
+              />
+            ) : (
+              <div className="h-20 w-14 flex items-center justify-center bg-blue-100 ">
+                <Images size={20} className="text-primary" />
+              </div>
+            )}
+          </div>
+
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogContent className="w-96 h-auto sm:rounded-none">
+              <DialogTitle>
+                <p className="text-lg font-roboto">Imagen del libro</p>
+              </DialogTitle>
+              <img
+                src={photoUrl}
+                alt="Full size photo"
+                className="w-full h-auto object-contain"
+              />
+            </DialogContent>
+          </Dialog>
+        </>
+      );
+    },
+  },
   {
     accessorKey: "title",
     header: ({ column }) => {

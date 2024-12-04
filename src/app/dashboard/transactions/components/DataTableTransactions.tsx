@@ -71,10 +71,10 @@ export function DataTableTransactions({ data }: DataTableProps) {
     <div className="w-full">
       <div className="flex items-center justify-between py-4">
         <Input
-          placeholder="¿Cuál libro estás buscando?"
-          value={(table.getColumn("book_id")?.getFilterValue() as string) ?? ""}
+          placeholder="Consulte por devueltos o prestados..."
+          value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("book_id")?.setFilterValue(event.target.value)
+            table.getColumn("status")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

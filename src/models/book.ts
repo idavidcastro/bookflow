@@ -11,5 +11,5 @@ export interface Book {
   publisher: string; //editorial
   available: boolean; //estado
   available_count: number; //stock
-  photo: File;
+  photo: string;
 }

@@ -1,5 +1,6 @@
 import { Book } from "@/models/book";
 import { supabase } from "./supabaseClient";
+import { v4 as uuidv4 } from "uuid";
 
 export const addBook = async (bookData: Book) => {
   try {
@@ -43,10 +44,11 @@ export const addBook = async (bookData: Book) => {
     throw error;
   }
 };
-export const uploadBookPhotoToStorage = async (file: File, bookId: number) => {
-  console.log("esa es la ", file);
+export const uploadBookPhotoToStorage = async (file: File) => {
+  const uniqueId = uuidv4();
+  const fileExtension = file.name.split(".").pop();
+  const filePath = `books/${uniqueId}.${fileExtension}`;
 
-  const filePath = `books/${bookId}/${file.name}`;
   const { data, error } = await supabase.storage
     .from("avatars")
     .upload(filePath, file);
@@ -69,27 +71,24 @@ export const getBooks = async () => {
 };
 
 export const getAvailableBooks = async (userId: string) => {
-  // Obtenemos los IDs de los libros que están prestados por el usuario
   const { data: transactions, error: transactionError } = await supabase
     .from("transactions")
     .select("book_id")
-    .eq("user_id", userId) // Filtra por el usuario actual
-    .is("returned_at", null); // Solo los libros que no han sido devueltos
+    .eq("user_id", userId)
+    .is("returned_at", null);
 
   if (transactionError) throw new Error(transactionError.message);
 
-  // Extraemos solo los IDs de los libros prestados
   const borrowedBookIds = transactions.map(
     (transaction) => transaction.book_id
   );
 
-  // Obtenemos los libros disponibles que no están en los libros prestados
   const { data, error } = await supabase
     .from("books")
     .select("*")
     .eq("available", true)
     .gt("available_count", 0)
-    .not("id", "in", `(${borrowedBookIds.join(",")})`); // Excluye los libros prestados
+    .not("id", "in", `(${borrowedBookIds.join(",")})`);
 
   if (error) throw new Error(error.message);
   return data;
