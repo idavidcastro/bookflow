@@ -43,7 +43,6 @@ import { supabase } from "@/lib/supabaseClient";
 import { useForm } from "react-hook-form";
 import { Book } from "../../../../models/book";
 import { addBook, uploadBookPhotoToStorage } from "@/lib/books";
-import InputImage from "./InputImage";
 
 interface Genre {
   id: number;
@@ -202,7 +201,7 @@ export default function DialogInventory() {
                   >
                     <CalendarIcon className="text-primary" />
                     {date ? (
-                      format(date, "dd MMM, yyyy") // Formato de día, mes y año
+                      format(date, "dd MMM, yyyy")
                     ) : (
                       <span>Seleciona una fecha</span>
                     )}

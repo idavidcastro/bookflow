@@ -50,7 +50,7 @@ export const columns: ColumnDef<Transaction>[] = [
               <img
                 src={bookDetails.photo}
                 alt="Book photo"
-                className="h-20 w-14 object-cover cursor-pointer"
+                className="h-20 w-14 object-cover cursor-pointer min-w-[60px] min-h-[90px]"
                 onClick={() => setIsOpen(true)}
               />
             ) : (

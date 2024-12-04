@@ -66,7 +66,7 @@ export default function DialogEditInventory({ book }: Props) {
     const { data, error } = await supabase.from("genres").select("id, name");
 
     if (error) {
-      console.error("Error fetching genres:", error);
+      console.error("Error consultando los géneros:", error);
     } else {
       setGenres(data || []);
     }

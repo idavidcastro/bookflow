@@ -21,12 +21,12 @@ export const columns: ColumnDef<Book>[] = [
 
       return (
         <>
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center ">
             {photoUrl ? (
               <img
                 src={photoUrl}
                 alt="User avatar"
-                className="h-20 w-14 object-cover cursor-pointer"
+                className="h-20 w-14 object-cover cursor-pointer min-w-[60px] min-h-[90px]"
                 onClick={() => setIsOpen(true)}
               />
             ) : (

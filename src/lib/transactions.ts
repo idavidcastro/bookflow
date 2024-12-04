@@ -19,7 +19,7 @@ export const handleBorrow = async (bookId: number, userId: string) => {
       {
         book_id: bookId,
         user_id: userId,
-        due_date: new Date(new Date().setDate(new Date().getDate() + 7)), // Fecha de vencimiento a 7 días
+        due_date: new Date(new Date().setDate(new Date().getDate() + 7)),
       },
     ]);
 
@@ -27,7 +27,9 @@ export const handleBorrow = async (bookId: number, userId: string) => {
       throw new Error(error.message);
     }
 
-    console.log("Transacción exitosa:", data);
+    alert(
+      "Transacción exitosa! Tiene 7 días para devolver el libro a partir de la fecha de la fecha de hoy"
+    );
     return data;
   } catch (error) {
     console.error("Error al prestar el libro:", error);
@@ -42,7 +44,21 @@ export const getUserTransactions = async (userId: string) => {
 
   if (error) throw new Error(error.message);
 
-  return data;
+  // Formatear las fechas de cada transacción
+  const formattedData = data.map((transaction) => {
+    return {
+      ...transaction,
+      due_date: new Date(transaction.due_date).toLocaleDateString("es-ES"), // Formato día/mes/año
+      borrowed_at: new Date(transaction.borrowed_at).toLocaleDateString(
+        "es-ES"
+      ), // Formato día/mes/año
+      returned_at: transaction.returned_at
+        ? new Date(transaction.returned_at).toLocaleDateString("es-ES")
+        : null, // Formato día/mes/año (si existe la fecha de retorno)
+    };
+  });
+
+  return formattedData;
 };
 
 export const getAllTransactions = async () => {
@@ -50,8 +66,22 @@ export const getAllTransactions = async () => {
 
   if (error) throw new Error(error.message);
 
-  return data;
+  const formattedData = data.map((transaction) => {
+    return {
+      ...transaction,
+      due_date: new Date(transaction.due_date).toLocaleDateString("es-ES"),
+      borrowed_at: new Date(transaction.borrowed_at).toLocaleDateString(
+        "es-ES"
+      ),
+      returned_at: transaction.returned_at
+        ? new Date(transaction.returned_at).toLocaleDateString("es-ES")
+        : null,
+    };
+  });
+
+  return formattedData;
 };
+
 export const returnBook = async (transactionId: number) => {
   const isConfirmed = window.confirm("¿Desea completar esta transacción?");
 

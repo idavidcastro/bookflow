@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Check, Images } from "lucide-react";
-import { deleteUser } from "@/lib/users";
 import { Transaction } from "@/models/transaction";
 import { returnBook } from "@/lib/transactions";
 import { useEffect, useState } from "react";
@@ -20,7 +19,7 @@ const fetchBookDetails = async (bookId: number) => {
       throw new Error(error.message);
     }
 
-    return data; // Esto debería devolver { name, photo }
+    return data;
   } catch (error: any) {
     console.error("Error fetching book details:", error.message || error);
     return null;
@@ -39,7 +38,7 @@ const fetchUserDetails = async (userId: number) => {
       throw new Error(error.message);
     }
 
-    return data; // Esto debería devolver { name, last_name }
+    return data;
   } catch (error: any) {
     console.error(
       "Error consultado los datos de los usuarios:",
@@ -71,7 +70,7 @@ export const columns: ColumnDef<Transaction>[] = [
               <img
                 src={bookDetails.photo}
                 alt="Book photo"
-                className="h-20 w-14 object-cover cursor-pointer"
+                className="h-20 w-14 object-cover cursor-pointer min-w-[60px] min-h-[90px]"
                 onClick={() => setIsOpen(true)}
               />
             ) : (

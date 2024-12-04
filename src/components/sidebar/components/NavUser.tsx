@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import ivan from "@/assets/profile/ivan.jpg"; // Imagen por defecto si no hay avatar
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
